@@ -20,6 +20,8 @@ Using `Nginx` as a reverse proxy with multiple `Node.js` applications, we can ac
  - **Hold on to `Kafka` and `Spring` for later implementation**
 
 <br></br>
+--------------
+
 ### Dockerfile Approach
 1. Import base-os image and add yourself as a `maintainer`; an author to be more exact
 ```
@@ -83,6 +85,7 @@ EOF
 
 <br></br>
 <br></br>
+-------------
 ### Reference Docs
  - [Git](https://github.com/rlaxoghd94/Kafka_Test/blob/master/Docs/git.md)
  - [Docker](https://github.com/rlaxoghd94/Docker_Tutorial)
