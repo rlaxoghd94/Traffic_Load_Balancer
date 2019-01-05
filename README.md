@@ -21,10 +21,14 @@ Using `Nginx` as a reverse proxy with multiple `Node.js` applications, we can ac
 
 <br></br>
 ### Dockerfile Approach
-1. Import base-os image
+1. Import base-os image and add yourself as a `maintainer`; an author to be more exact
 ```
 FROM ubuntu:18.04
+
+# File Author / Maintainer
+MAINTAINER Nicholas Taehong Kim & JongWon Song
 ```
+
 2. Update `aptitude` and install necessary libraries such as: `Nginx`, `Node`, `npm`
 ```
 # Install Nginx
@@ -33,10 +37,10 @@ RUN apt-get update && apt-get install -y \
 	curl
 
 # Download Node.js
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
 
 # Install Node.js and npm
-RUN sudo apt-get install nodejs
+RUN sudo apt-get install python build-essential nodejs
 ```
 
 3. Copy necessary config files or node application codes:
@@ -51,17 +55,27 @@ WORKDIR /my-files/
 # Move Nginx config files (basically, configuring Nginx settings)
 RUN cp ./default /etc/nginx/sites-available/default && cp ./load-balancer.conf /etc/nginx/conf.d/load-balancer.conf
 
+# Provide cached layer for node_module for installation
+ADD package.json ./package.json
+RUN npm install
+
 # For your own taste, run as much node files as you wish for load-distribution
 RUN nodejs ./{ Node App Code File }.js &
 ```
 
-4. Run `bash` when this image is ran by `docker`:
+4. Expose Port
+```
+# Open port for Nginx
+EXPOSE { Port Num }
+```
+
+5. Run `bash` when this image is ran by `docker`:
 ```
 # Doing so can allow you to dynamically manipulate the container on-the-fly
 CMD ["bash"]
 ```
 
-5. Explicitly state the End-Of-File
+6. Explicitly state the End-Of-File
 ```
 EOF
 ```
