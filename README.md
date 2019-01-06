@@ -82,6 +82,24 @@ CMD ["bash"]
 EOF
 ```
 
+### Build `Dockerfile`
+Once you've managed to complete a `Dockerfile`, it's time to build it as an image with the following code:
+```shell
+sudo docker build -t { tag name } .
+```
+During this build process, docker needs `sudo` privilege as a directory with a Dockerfile(which is `.` in this case)
+
+Once the build process is complete, check if the image is built properly with the following:
+```shell
+docker image ls
+```
+
+If everything went accordingly so far, run the app with the following:
+```shell
+sudo docker run -p { external port}:{ exposed port } { tag name }
+```
+ 
+
 
 <br></br>
 <br></br>
