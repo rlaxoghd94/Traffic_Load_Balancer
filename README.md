@@ -98,8 +98,7 @@ If everything went accordingly so far, run the app with the following:
 ```shell
 sudo docker run -p { external port}:{ exposed port } { tag name }
 ```
- 
-
+***Note***: Docker's ubuntu image does not have `sudo` command in it. Execute `Docker` command with the `root` privilege for better practice
 
 <br></br>
 <br></br>
