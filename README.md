@@ -100,6 +100,16 @@ sudo docker run -p { external port}:{ exposed port } { tag name }
 ```
 ***Note***: Docker's ubuntu image does not have `sudo` command in it. Execute `Docker` command with the `root` privilege for better practice
 
+***Note***: When `docker build` command fails, it creates an `<none>` tagged images. In order to delete this, use the following:
+```shell
+# check the image id
+sudo docker image ls
+
+# delete the image based on the image id
+sudo docker rmi { image id } --force
+```
+
+
 <br></br>
 <br></br>
 -------------
