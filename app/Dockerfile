@@ -18,10 +18,6 @@ RUN rm /etc/nginx/sites-available/default && cp ./default /etc/nginx/sites-avail
 
 RUN npm install
 
-RUN nodejs ./app1.js & 
-RUN nodejs ./app2.js &
-RUN nodejs ./app3.js &
-
 EXPOSE 80
 
 CMD ["sh", "node_init_.sh"]

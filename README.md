@@ -17,8 +17,9 @@
 <br></br>
 <br></br>
 
-### `Dockerfile` I've composed to achieve this goal
+### Files I've composed to attempt to achieve this goal
 
+#### `Dockerfile`
 ```Dockerfile
 FROM ubuntu:18.04
 
@@ -40,11 +41,24 @@ RUN rm /etc/nginx/sites-available/default && cp ./default /etc/nginx/sites-avail
 
 RUN npm install
 
-RUN nodejs ./app1.js & 
-RUN nodejs ./app2.js &
-RUN nodejs ./app3.js &
-
 EXPOSE 80
 
 CMD ["sh", "node_init_.sh"]
 ```
+
+#### `node_init_.sh`
+```sh
+echo "-------------node_init_.sh-------------"
+nodejs app1.js &
+nodejs app2.js &
+nodejs app3.js &
+echo "---------------------------------------"
+
+/bin/sh
+
+while sleep 60; do
+   echo "---loop---"
+
+done
+```
+
