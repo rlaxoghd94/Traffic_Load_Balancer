@@ -1,124 +1,50 @@
-# Traffic Load Balancer
+## `Develop` branch
 
-### Team Members
- - 김태홍
- - 송종원
+### Branch Goal
+ - Try to set up a *single-containered* docker ecosystem
+   - Within this ecosystem there lies, `Nginx`, `Node.js`, and etc
+   - After multi-staged setup is complete, `node_init_.sh`, a shell script file, will start via a `CMD` command
+   - `node_init_.sh` simply consists of 3 node command lines running `app1.js`, `app2.js`, `app3.js`
 
-### Project Purpose
-Build a docker-based web service that can endure 100,000,000 traffic at once.
 
-### Summary
-Using `Nginx` as a reverse proxy with multiple `Node.js` applications, we can achieve a well-oriented load balanced web application. In addition to this, we'll be using `Kafka` clients per `Node.js` applications to communicate and execute actions on `Spring` applications while rendering `.html` files on `Node.js` applications.
+### Problem
+ - Docker build and run command works fine, ***but*** when `nodejs app1.js &` is executed, the process instantly dies.
 
-### Handling Criteria
-1. Git
-2. Docker
-3. Nginx
-4. Node.js (Express)
-5. Kafka
-6. Spring
- - **Hold on to `Kafka` and `Spring` for later implementation**
+### Solution
+ - This could be somewhat of a *bypass*, but use `docker-compose.yml` instead of `Dockerfile`
+   - *Meaning*, setting a *multi-containered* ecosystem, which Docker developers encourages users to, will allow a much more stable environment and isolation among different modules
 
 <br></br>
---------------
+<br></br>
 
-### Dockerfile Approach
-1. Import base-os image and add yourself as a `maintainer`; an author to be more exact
-```
+### `Dockerfile` I've composed to achieve this goal
+
+```Dockerfile
 FROM ubuntu:18.04
 
-# File Author / Maintainer
-MAINTAINER Nicholas Taehong Kim & JongWon Song
-```
+MAINTAINER Nicholas Taehong Kim <ktae.nic@gmail.com>
 
-2. Update `aptitude` and install necessary libraries such as: `Nginx`, `Node`, `npm`
-```
-# Install Nginx
-RUN apt-get update && apt-get install -y \
-	nginx \
-	curl
+RUN apt-get update && apt-get install -y gnupg2 nginx curl
+# Use the following line of code, since docker's ubuntu image does not contain 'sudo'
+# RUN apt-get install -y sudo && rm -rf /var/lib/apt/lists/*
+# RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo bash -
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN apt-get install -y python build-essential nodejs
 
-# Download Node.js
-RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
-
-# Install Node.js and npm
-RUN sudo apt-get install python build-essential nodejs
-```
-
-3. Copy necessary config files or node application codes:
-```
-# Copy all files from current directory to the base image(ubuntu:18.04 at the moment)
 COPY . /my-files
 
-# Since you've moved your files, set '/my-files/' as a default working directory
-# This allows you from now on to use '/my-files/{ filename }' as '{ filename }
 WORKDIR /my-files/
 
-# Move Nginx config files (basically, configuring Nginx settings)
-RUN cp ./default /etc/nginx/sites-available/default && cp ./load-balancer.conf /etc/nginx/conf.d/load-balancer.conf
+RUN rm /etc/nginx/sites-available/default && cp ./default /etc/nginx/sites-available/default
+# RUN nginx -s reload
 
-# Provide cached layer for node_module for installation
-ADD package.json ./package.json
 RUN npm install
 
-# For your own taste, run as much node files as you wish for load-distribution
-RUN nodejs ./{ Node App Code File }.js &
-```
+RUN nodejs ./app1.js & 
+RUN nodejs ./app2.js &
+RUN nodejs ./app3.js &
 
-4. Expose Port
-```
-# Open port for Nginx
-EXPOSE { Port Num }
-```
+EXPOSE 80
 
-5. Run `bash` when this image is ran by `docker`:
+CMD ["sh", "node_init_.sh"]
 ```
-# Doing so can allow you to dynamically manipulate the container on-the-fly
-CMD ["bash"]
-```
-
-6. Explicitly state the End-Of-File
-```
-EOF
-```
-
-### Build `Dockerfile`
-Once you've managed to complete a `Dockerfile`, it's time to build it as an image with the following code:
-```shell
-sudo docker build -t { tag name } .
-```
-During this build process, docker needs `sudo` privilege as a directory with a Dockerfile(which is `.` in this case)
-
-Once the build process is complete, check if the image is built properly with the following:
-```shell
-docker image ls
-```
-
-If everything went accordingly so far, run the app with the following:
-```shell
-sudo docker run -p { external port}:{ exposed port } { tag name }
-```
-***Note***: Docker's ubuntu image does not have `sudo` command in it. Execute `Docker` command with the `root` privilege for better practice
-
-***Note***: When `docker build` command fails, it creates an `<none>` tagged images. In order to delete this, use the following:
-```shell
-# check the image id
-sudo docker image ls
-
-# delete the image based on the image id
-sudo docker rmi { image id } --force
-```
-
-
-<br></br>
-<br></br>
--------------
-### Reference Docs
- - [Git](https://github.com/rlaxoghd94/Kafka_Test/blob/master/Docs/git.md)
- - [Docker](https://github.com/rlaxoghd94/Docker_Tutorial)
- - [Nginx](https://github.com/rlaxoghd94/Nginx_NodeJs_Manual/blob/master/README.md)
- - [Node.js](https://github.com/rlaxoghd94/Nginx_NodeJs_Manual/blob/master/Nodejs/README.md)
- - [Kafka](https://github.com/rlaxoghd94/Kafka_Test/blob/master/README.md)
-
-### Reference Page
- - [Docker, Node.js, Nginx](http://labs.brandi.co.kr/2018/05/25/kangww.html)
