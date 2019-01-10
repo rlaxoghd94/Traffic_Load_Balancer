@@ -9,6 +9,8 @@
 
 ### Problem
  - Docker build and run command works fine, ***but*** when `nodejs app1.js &` is executed, the process instantly dies.
+   - Causes `Nginx` to return `Error: 502`
+      - Meaning, a reverse proxy/web server cannot reach the web app running at the moment
 
 ### Solution
  - This could be somewhat of a *bypass*, but use `docker-compose.yml` instead of `Dockerfile`
