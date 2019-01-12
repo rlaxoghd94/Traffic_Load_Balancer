@@ -1,7 +1,7 @@
 ## `Develop` branch
 
 ### Branch Goal
- - Try to set up a *single-containered* docker ecosystem
+ - Try to set up a ***single-containered*** docker ecosystem
    - Within this ecosystem there lies, `Nginx`, `Node.js`, and etc
    - After multi-staged setup is complete, `node_init_.sh`, a shell script file, will start via a `CMD` command
    - `node_init_.sh` simply consists of 3 node command lines running `app1.js`, `app2.js`, `app3.js`

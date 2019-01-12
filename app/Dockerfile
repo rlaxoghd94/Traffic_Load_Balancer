@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:16.04
 
 MAINTAINER Nicholas Taehong Kim <ktae.nic@gmail.com>
 
@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y gnupg2 nginx curl
 # Use the following line of code, since docker's ubuntu image does not contain 'sudo'
 # RUN apt-get install -y sudo && rm -rf /var/lib/apt/lists/*
 # RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo bash -
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
 RUN apt-get install -y python build-essential nodejs
 
 COPY . /my-files
