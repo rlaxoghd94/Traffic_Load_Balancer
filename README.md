@@ -49,6 +49,8 @@ CMD ["sh", "node_init_.sh"]
 ```
 
 #### `node_init_.sh`
+- What I've tried to achieve with this was to follow [this](https://docs.docker.com/config/containers/multi-service_container/) implementation via a script file.
+
 ```sh
 echo "-------------node_init_.sh-------------"
 nodejs app1.js &
@@ -63,4 +65,3 @@ while sleep 60; do
 
 done
 ```
-
