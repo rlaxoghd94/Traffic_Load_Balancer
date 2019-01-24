@@ -1,0 +1,30 @@
+version: '3'
+services:
+   node1:
+      build: ./src/nodejs/node1/
+      networks:
+         - traffic_balancer
+      ports:
+         - "8080:8080"
+   node2:
+      build: ./src/nodejs/node2/
+      networks: 
+         - traffic_balancer
+      ports:
+         - "8081:8081"  
+   node3:
+      build: ./src/nodejs/node3/
+      networks:
+         - traffic_balancer
+      ports:
+         - "8082:8082"
+   nginx:
+      build: ./src/nginx/
+      networks:
+         - traffic_balancer
+      ports:
+         - "80:80"
+
+networks:
+   traffic_balancer:
+
