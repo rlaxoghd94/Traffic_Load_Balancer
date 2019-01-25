@@ -5,33 +5,31 @@ services:
       networks:
          - traffic_balancer
       ports:
-         - 8080:8080
+         - "8080:8080"
+      environment:
+         VIRTUAL_HOST: nodejs.node1.com
    node2:
       build: ./src/nodejs/node2/
       networks: 
          - traffic_balancer
+      ports:
+         - "8081:8081"
       environment:
-         - VIRTUAL_HOST=nodejs.node2.com
+         VIRTUAL_HOST: nodejs.node2.com
    node3:
       build: ./src/nodejs/node3/
       networks:
          - traffic_balancer
+      ports:
+         - "8082:8082"
       environment:
-         - VIRTUAL_HOST=nodejs.node3.com
+         VIRTUAL_HOST: nodejs.node3.com
    nginx:
-      image: nginx:latest
-      container_name: fucking_nginx
-      volumes:
-         - ./src/nginx/nginx.conf:/etc/nginx/nginx.conf:rw
+      build: ./src/nginx/
       networks:
          - traffic_balancer
-      links:
-         - node1:nodejs-node1
-         - node2
-         - node3
       ports:
          - "8900:80"
-      command: /bin/sh -c "exec nginx -g 'daemon off;'"
 
 networks:
    traffic_balancer:

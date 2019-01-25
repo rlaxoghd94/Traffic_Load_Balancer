@@ -13,4 +13,5 @@ EXPOSE 8080
 
 # CMD["npm", "start"]
 # CMD ["node", "app.js"]
-CMD npm start
+# CMD npm start
+CMD node app.js

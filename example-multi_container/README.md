@@ -4,6 +4,17 @@
 - Try to set up a ***multi-containered*** docker ecosystem
 - Within this ecosystem there lies a single `Nginx` web server and three `Node.js` web applications
 
+### TODO
+- Give each `Node` services a hostname for `Nginx` reverse proxy
+
+
+### Note
+- Run the whole system using the following command:
+   - `docker-compose -d up --build`
+- To debug a situtation where a container fails to run, use the following command to check the log:
+   - `docker-compose -f docker-compose.yml up`
+- To enter container in a `/bin/bash` mode, use the following code:
+   - `docker exec -it <container name> /bin/bash`
 <br></br>
 <br></br>
 
