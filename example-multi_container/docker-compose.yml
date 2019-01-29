@@ -10,14 +10,14 @@ services:
       build: ./src/nodejs/node2/
       networks: 
          - traffic_balancer
-      environment:
-         - VIRTUAL_HOST=nodejs.node2.com
+      ports:
+         - 8081:8081
    node3:
       build: ./src/nodejs/node3/
       networks:
          - traffic_balancer
-      environment:
-         - VIRTUAL_HOST=nodejs.node3.com
+      ports:
+         - 8082:8082
    nginx:
       image: nginx:latest
       container_name: fucking_nginx
@@ -27,8 +27,8 @@ services:
          - traffic_balancer
       links:
          - node1:nodejs-node1
-         - node2
-         - node3
+         - node2:nodejs-node2
+         - node3:nodejs-node3
       ports:
          - "8900:80"
       command: /bin/sh -c "exec nginx -g 'daemon off;'"

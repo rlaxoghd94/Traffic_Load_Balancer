@@ -9,6 +9,6 @@ app.get('/testtest', (req, res) => {
    res.send("You've entered the test page");
 });
 
-app.listen(8081, '127.0.0.1');
+app.listen(8081, '0.0.0.0');
 
 console.log('Server running at 127.0.0.1:8081');

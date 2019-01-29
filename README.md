@@ -15,6 +15,7 @@ Using `Nginx` as a reverse proxy with multiple `Node.js` applications, we can ac
 2. Docker
 3. Nginx
 4. Node.js (Express)
+ - Implement `Node Cluster` with multiple workers
 5. Kafka
 6. Spring
  - **Hold on to `Kafka` and `Spring` for later implementation**

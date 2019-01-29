@@ -20,6 +20,8 @@
 
 #### `docker-compose.yml`
 ```yml
+
+
 version: '3'
 services:
    node1:
@@ -27,31 +29,66 @@ services:
       networks:
          - traffic_balancer
       ports:
-         - "8080:8080"
+         - 8080:8080
    node2:
       build: ./src/nodejs/node2/
       networks: 
          - traffic_balancer
       ports:
-         - "8081:8081"  
+         - 8081:8081
    node3:
       build: ./src/nodejs/node3/
       networks:
          - traffic_balancer
       ports:
-         - "8082:8082"
+         - 8082:8082
    nginx:
-      build: ./src/nginx/
+      image: nginx:latest
+      container_name: fucking_nginx
+      volumes:
+         - ./src/nginx/nginx.conf:/etc/nginx/nginx.conf:rw
       networks:
          - traffic_balancer
+      links:
+         - node1:nodejs-node1
+         - node2:nodejs-node2
+         - node3:nodejs-node3
       ports:
-         - "80:80"
+         - "8900:80"
+      command: /bin/sh -c "exec nginx -g 'daemon off;'"
 
 networks:
    traffic_balancer:
 ```
 
-#### `Dockerfile` for `Node.js`
+#### `nginx.conf` important block
+```nginx
+...
+
+   upstream node_stream {
+      least_conn;
+      server nodejs-node1:8080;
+      server nodejs-node2:8081;
+      server nodejs-node3:8082;
+   }   
+   
+   server {
+      listen 80 default_server;
+      listen [::]:80 default_server;
+
+      server_name _;
+
+      location / { 
+         # proxy_pass http://127.0.0.1:8080/;
+         # proxy_pass http://nodejs.node1:8080/;
+         proxy_pass "http://node_stream";
+      }   
+   }
+
+...
+```
+
+#### Node `Dockerfile`
 ```Dockerfile
 FROM node:8
 
@@ -68,31 +105,25 @@ EXPOSE 8080
 
 # CMD["npm", "start"]
 # CMD ["node", "app.js"]
-CMD npm start
+# CMD npm start
+CMD node app.js
 ```
- - ***Note***: within the `package.json` file, I've included a `start` sub command in the `script` section
-   - `"start": "node app.js"`
 
-#### `Dockerfile` for `Nginx`
+#### Node `app.js`
+```js
+var express = require('express');
+var app = express();
 
-```Dockerfile
-FROM nginx
+app.get('/', (req, res) => {
+   res.send('<h1>Working on Node 1</h1>');
+});
 
-WORKDIR /usr/src/nginx
+app.get('/testtest', (req, res) => {
+   res.send("You've entered the test page");
+});
 
-# Define mountable directories
-# VOLUME ["/etc/nginx/sites-available"]
+app.listen(8080, '0.0.0.0');
 
-RUN rm /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/examplessl.conf
-
-# Copy Nginx Configuration HERE
-# COPY ./default /etc/nginx/sites-available/default
-COPY ./nginx.conf /etc/nginx/nginx.conf
-
-EXPOSE 80
-
-# Define default command
-# CMD ["nginx"]
-# CMD nginx
+console.log('Server running at 127.0.0.1:8080');
 ```
 
