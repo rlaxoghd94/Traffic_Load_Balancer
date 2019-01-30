@@ -25,23 +25,23 @@
 version: '3'
 services:
    node1:
-      build: ./src/nodejs/node1/
+      build: ./src/nodejs/
       networks:
          - traffic_balancer
       ports:
          - 8080:8080
    node2:
-      build: ./src/nodejs/node2/
+      build: ./src/nodejs/
       networks: 
          - traffic_balancer
       ports:
-         - 8081:8081
+         - 8081:8080
    node3:
-      build: ./src/nodejs/node3/
+      build: ./src/nodejs/
       networks:
          - traffic_balancer
       ports:
-         - 8082:8082
+         - 8082:8080
    nginx:
       image: nginx:latest
       container_name: fucking_nginx
@@ -115,7 +115,7 @@ var express = require('express');
 var app = express();
 
 app.get('/', (req, res) => {
-   res.send('<h1>Working on Node 1</h1>');
+   res.send('<h1>Working on Node: ' + process.pid + '</h1><br></br>');
 });
 
 app.get('/testtest', (req, res) => {
