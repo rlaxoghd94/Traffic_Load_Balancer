@@ -31,7 +31,7 @@ services:
          - node2:nodejs-node2
          - node3:nodejs-node3
       ports:
-         - 8900:80
+         - 80:80
       command: /bin/sh -c "exec nginx -g 'daemon off;'"
    
 networks:
