@@ -7,10 +7,11 @@ var instance_id = uuid.v4();
 
 var cpuCount = os.cpus().length; //CPU Count
 var workerCount = cpuCount/3;
+
+cluster.schedulingPolicy = cluster.SCHED_RR;
  
 // Master
 if (cluster.isMaster) {
-    //Worker 
     console.log('Server ID : '+instance_id);
     console.log('Server CPU Count : ' + cpuCount);
     console.log('Server Worker Count : ' + workerCount);
@@ -34,12 +35,12 @@ if (cluster.isMaster) {
         worker.on('message', workerMsgListener);
     }
    
-    //worker is online state
+    //Worker is online state
     cluster.on('online', function(worker) {
         console.log('Worker alive - ID : [' + worker.process.pid + ']');
     });
    
-    //if worker is died
+    //If worker is died
     cluster.on('exit', function(worker) {
         console.log('woker die - ID : [' + worker.process.pid + ']');
         console.log('Create new worker.');
@@ -60,7 +61,7 @@ if (cluster.isMaster) {
         console.log("Express Server " + server.address().port + "Port is Listening.");
     });
    
-    //마스터에게 master_id 요청
+    //Request master_id to master
     process.send({worker_id: worker_id, cmd:'MASTER_ID'});
     process.on('message', function (msg){
         if (msg.cmd === 'MASTER_ID') {
